@@ -55,11 +55,9 @@ h1 {
 /* !!! 关键修正 1: 独立指针定位 (在 container 内部，转盘上方) !!! */
 .pointer {
     position: absolute;
-    /* 假设 container padding-top 为 30px, margin-top 为 30px。
-       转盘总高度 330px + 2*10px 边框 = 350px。
-       指针位于转盘上方的边框（顶部）中心。
-       如果转盘顶部距离 container 顶部 60px 左右，我们将指针定位于此。*/
-    top: 150px; /* 调整此值直到指针恰好在转盘边框顶部 */
+    /* 调整此值直到指针恰好在转盘边框顶部 */
+    /* container padding-top (30) + h1 margin-bottom (20) + 调整值 (10) = 60px */
+    top: 160px;
     left: 50%;
     transform: translateX(-50%);
 
@@ -74,11 +72,13 @@ h1 {
 
 /* 旋转按钮：位于转盘中心 */
 .spin-button {
-    /* 确保按钮在父容器 (.roulette-wrapper) 中绝对居中 */
+    /* 核心居中三件套 */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+
+    /* 移除 relative */
 
     /* 保持按钮尺寸和文字居中，防止遮挡 */
     width: 60px;
@@ -97,11 +97,12 @@ h1 {
     line-height: 1.1;
     padding: 3px;
     box-sizing: border-box;
+    white-space: normal;
 }
 
-/* 关键修正 2: 移除伪元素指针，因为它现在是独立元素 */
+/* 移除伪元素指针 */
 .spin-button::before, .spin-button::after {
-    display: none;
+    content: none;
 }
 
 .result {
@@ -112,7 +113,6 @@ h1 {
     min-height: 30px;
 }
 
-/* ... (省略底部编辑区样式，保持不变) ... */
 .editor-section {
     margin-top: 30px;
     width: 100%;
@@ -121,6 +121,7 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 8px;
 }
+
 .editor-section h2 {
     color: #555;
     margin-bottom: 15px;

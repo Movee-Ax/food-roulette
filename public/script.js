@@ -1,5 +1,6 @@
 const canvas = document.getElementById('rouletteCanvas');
 const ctx = canvas.getContext('2d');
+// 确保这些 ID 存在于 HTML 中
 const spinButton = document.getElementById('spinButton');
 const resultDiv = document.getElementById('result');
 const itemsContainer = document.getElementById('itemsContainer');
@@ -16,20 +17,27 @@ async function fetchItems() {
         const response = await fetch('/api/roulette');
         items = await response.json();
         drawRoulette();
-        renderEditor();
+        // 确保 itemsContainer 存在，解决 TypeError
+        if (itemsContainer) {
+            renderEditor();
+        }
     } catch (error) {
         console.error('Error fetching items:', error);
-        resultDiv.textContent = '无法加载转盘内容。';
+        if (resultDiv) {
+            resultDiv.textContent = '无法加载转盘内容。';
+        }
     }
 }
 
 function drawRoulette() {
+    // 确保 canvas 和 context 存在
+    if (!canvas || !ctx) return;
+
     const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
     let startAngle = 0;
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    // 原始半径计算
     const radius = Math.min(centerX, centerY) - 5;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -44,7 +52,6 @@ function drawRoulette() {
         ctx.lineTo(centerX, centerY);
         ctx.closePath();
 
-        // 设置颜色
         ctx.fillStyle = colorPalette[index % colorPalette.length];
         ctx.fill();
         ctx.strokeStyle = 'white';
@@ -59,7 +66,7 @@ function drawRoulette() {
         ctx.textAlign = 'right';
         ctx.fillStyle = 'black';
         ctx.font = '14px Arial';
-        // **修正：文字绘制位置离圆心更远 (radius - 10)，避免被中心按钮遮挡**
+        // 文字绘制位置离圆心更远，避免被中心 60px 按钮遮挡
         ctx.fillText(item.food, radius - 10, 0);
         ctx.restore();
 
@@ -71,8 +78,8 @@ function drawRoulette() {
 // --- 核心函数：旋转逻辑 ---
 
 async function spinRoulette() {
-    spinButton.disabled = true;
-    resultDiv.textContent = '正在思考吃什么...';
+    if (spinButton) spinButton.disabled = true;
+    if (resultDiv) resultDiv.textContent = '正在思考吃什么...';
 
     try {
         const response = await fetch('/api/roulette/spin', { method: 'POST' });
@@ -85,7 +92,7 @@ async function spinRoulette() {
         let accumulatedWeight = 0;
         let targetCenterAngle = 0;
 
-        // 1. 根据后端结果，计算指针应停止的中心角度
+        // 1. 计算指针应停止的中心角度
         for (const item of currentItems) {
             const angleDegrees = (item.weight / totalWeight) * 360;
 
@@ -98,38 +105,38 @@ async function spinRoulette() {
 
         // 2. 计算最终旋转角度
         const spinRounds = 5;
-        // **关键修正: 偏移角度改为 -90°，配合底部指针 (6点钟方向)**
+        // !!! 关键修正: 偏移角度设置为 -90°，配合底部指针 (6点钟方向) !!!
         const OFFSET_DEGREE = -90;
 
-        // 最终公式：(圈数 * 360) + (360 - 目标中心角度) + 偏移量
         const totalRotation = (spinRounds * 360) + (360 - targetCenterAngle) + OFFSET_DEGREE;
 
         // 3. 执行旋转动画
         const rouletteWrapper = document.querySelector('.roulette-wrapper');
-        rouletteWrapper.style.transition = 'transform 4s cubic-bezier(0.2, 0.9, 0.4, 1)';
-        rouletteWrapper.style.transform = `rotate(${totalRotation}deg)`;
+        if (rouletteWrapper) {
+            rouletteWrapper.style.transition = 'transform 4s cubic-bezier(0.2, 0.9, 0.4, 1)';
+            rouletteWrapper.style.transform = `rotate(${totalRotation}deg)`;
 
-        // 4. 动画结束处理
-        rouletteWrapper.addEventListener('transitionend', function handler() {
-            spinButton.disabled = false;
-            resultDiv.textContent = `🎉 恭喜！今天吃: ${selectedFood} 🎉`;
+            // 4. 动画结束处理
+            rouletteWrapper.addEventListener('transitionend', function handler() {
+                if (spinButton) spinButton.disabled = false;
+                if (resultDiv) resultDiv.textContent = `🎉 恭喜！今天吃: ${selectedFood} 🎉`;
 
-            rouletteWrapper.removeEventListener('transitionend', handler);
+                rouletteWrapper.removeEventListener('transitionend', handler);
 
-            // 保持当前显示状态，但清除动画属性
-            rouletteWrapper.style.transition = 'none';
-            rouletteWrapper.style.transform = `rotate(${totalRotation % 360}deg)`;
+                // 保持当前显示状态，但清除动画属性
+                rouletteWrapper.style.transition = 'none';
+                rouletteWrapper.style.transform = `rotate(${totalRotation % 360}deg)`;
 
-            setTimeout(() => {
-                rouletteWrapper.style.transition = 'transform 4s cubic-bezier(0.2, 0.9, 0.4, 1)';
-            }, 50);
-
-        });
+                setTimeout(() => {
+                    rouletteWrapper.style.transition = 'transform 4s cubic-bezier(0.2, 0.9, 0.4, 1)';
+                }, 50);
+            });
+        }
 
     } catch (error) {
         console.error('Spin failed:', error);
-        resultDiv.textContent = '旋转失败，请检查服务器连接。';
-        spinButton.disabled = false;
+        if (resultDiv) resultDiv.textContent = '旋转失败，请检查服务器连接。';
+        if (spinButton) spinButton.disabled = false;
     }
 }
 
@@ -137,11 +144,14 @@ async function spinRoulette() {
 // --- 编辑器和更新逻辑 ---
 
 function renderEditor() {
+    if (!itemsContainer) return; // 避免 TypeError
+
     itemsContainer.innerHTML = '';
     items.forEach(item => {
         addItemField(item.food, item.weight);
     });
 }
+// ... (addItemField, handleUpdate 函数保持不变) ...
 
 function addItemField(food = '', weight = 10) {
     const div = document.createElement('div');
@@ -196,10 +206,19 @@ async function handleUpdate(event) {
 }
 
 
-// --- 初始化 ---
+// --- 初始化 (解决 addEventListener 错误) ---
 document.addEventListener('DOMContentLoaded', () => {
     fetchItems();
-    editorForm.addEventListener('submit', handleUpdate);
-    spinButton.addEventListener('click', spinRoulette);
-    document.getElementById('addItemButton').addEventListener('click', addItemField);
+
+    // !!! 确保变量存在再添加监听器 !!!
+    if (editorForm) {
+        editorForm.addEventListener('submit', handleUpdate);
+    }
+    if (spinButton) {
+        spinButton.addEventListener('click', spinRoulette);
+    }
+    const addItemBtn = document.getElementById('addItemButton');
+    if (addItemBtn) {
+        addItemBtn.addEventListener('click', addItemField);
+    }
 });
