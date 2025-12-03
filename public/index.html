@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食物转盘决定器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ 午饭/晚饭吃什么？</h1>
+
+        <div class="roulette-wrapper">
+            <div class="pointer"></div>
+            <canvas id="rouletteCanvas"></canvas>
+            <button id="spinButton" class="spin-button">点击旋转</button>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <div class="editor-section">
+            <h2>⚙️ 修改转盘内容及比例 (权重越大，概率越高)</h2>
+            <form id="editorForm">
+                <div id="itemsContainer"></div>
+
+                <button type="button" id="addItemButton">+ 添加食物</button>
+                <button type="submit">保存并更新转盘</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
