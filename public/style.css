@@ -12,7 +12,6 @@ body {
 }
 
 .container {
-    /* 关键：必须设置为 relative，以便外部指针可以使用 absolute 定位 */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -30,7 +29,6 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* 整个转盘容器：用于定位和应用旋转动画 */
 .roulette-wrapper {
     position: relative;
     width: 350px;
@@ -41,7 +39,6 @@ h1 {
     box-sizing: content-box;
 }
 
-/* Canvas 画布：用于扇区绘制 */
 #rouletteCanvas {
     width: 100%;
     height: 100%;
@@ -52,27 +49,14 @@ h1 {
     z-index: 1;
 }
 
-/* !!! 关键修正: 指针定位 (位于 .roulette-wrapper 外部) !!! */
+/* !!! 关键修正 1: 移除旧的 .pointer 样式，防止干扰 !!! */
 .pointer {
-    position: absolute;
-    /* 修正 top 值，使其向下移动，对齐转盘顶部 */
-    top: 45px; /* 根据实际布局修正，将指针尖端对准转盘顶部 */
-
-    /* 定位到容器中心 */
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 0;
-    height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 25px solid #C70039;
-    z-index: 15;
+    display: none;
 }
 
 /* 旋转按钮：位于转盘中央 */
 .spin-button {
-    position: absolute;
+    position: relative; /* 关键: 用于定位::after伪元素 */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -91,6 +75,25 @@ h1 {
     box-sizing: border-box;
 }
 
+/* !!! 关键修正 2: 创建新的伪元素指针，指向下方 !!! */
+.spin-button::after {
+    content: '';
+    position: absolute;
+    /* 定位到按钮底部中心 */
+    bottom: -25px; /* 指针的高度是 25px */
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 0;
+    height: 0;
+    /* 倒三角形：边框底部透明，顶部设置为红色 */
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 25px solid #C70039; /* 指针颜色 */
+    z-index: 11; /* 确保在按钮上方 */
+}
+
+
 .result {
     margin-top: 20px;
     font-size: 1.5em;
@@ -107,7 +110,7 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 8px;
 }
-
+/* ... (省略底部编辑区样式，保持不变) ... */
 .editor-section h2 {
     color: #555;
     margin-bottom: 15px;

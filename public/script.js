@@ -90,7 +90,6 @@ async function spinRoulette() {
             const angleDegrees = (item.weight / totalWeight) * 360;
 
             if (item.food === selectedFood) {
-                // 找到了选中的扇区，计算其中心角度
                 targetCenterAngle = accumulatedWeight + (angleDegrees / 2);
                 break;
             }
@@ -99,9 +98,11 @@ async function spinRoulette() {
 
         // 2. 计算最终旋转角度
         const spinRounds = 5;
-        const OFFSET_DEGREE = 90; // Canvas 0° 是 3点钟方向，指针是 12点钟方向，相差 90°
+        // !!! 关键修正: 偏移角度改为 -90° !!!
+        // 指针在 6点钟方向，Canvas 0° 在 3点钟方向，相差 -90°
+        const OFFSET_DEGREE = -90;
 
-        // 最终公式：(圈数 * 360) + (360 - 目标中心角度) + 90° 偏移
+        // 最终公式：(圈数 * 360) + (360 - 目标中心角度) + 偏移量
         const totalRotation = (spinRounds * 360) + (360 - targetCenterAngle) + OFFSET_DEGREE;
 
         // 3. 执行旋转动画
