@@ -1,4 +1,4 @@
-/* public/style.css */
+/* public/style.css - 确保按钮居中和尺寸优化 */
 
 body {
     font-family: Arial, sans-serif;
@@ -29,20 +29,24 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* 核心：roulette-wrapper 必须是 relative 定位，作为 spin-button 的定位基准 */
 .roulette-wrapper {
     position: relative;
-    width: 350px;
-    height: 350px;
+    /* 保持与 Canvas 尺寸一致 */
+    width: 330px;
+    height: 330px;
     margin: 30px auto;
     border-radius: 50%;
     transition: transform 4s cubic-bezier(0.2, 0.9, 0.4, 1);
-    box-sizing: content-box;
+    box-sizing: border-box;
+    border: 10px solid #FFC72C;
 }
 
+/* 修正 Canvas: 移除边框，使用 100% 尺寸填充 wrapper */
 #rouletteCanvas {
     width: 100%;
     height: 100%;
-    border: 10px solid #FFC72C;
+    border: none;
     border-radius: 50%;
     display: block;
     box-sizing: border-box;
@@ -53,13 +57,14 @@ h1 {
     display: none;
 }
 
-/* 旋转按钮：位于转盘中央 */
+/* 旋转按钮：位于转盘中心 */
+/* 原始按钮尺寸和定位 */
 .spin-button {
-    position: relative; /* 关键: 用于定位::before伪元素 */
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100px;
+    width: 100px; /* 原始尺寸较大，可能遮挡文字 */
     height: 100px;
     border-radius: 50%;
     border: none;
@@ -74,25 +79,22 @@ h1 {
     box-sizing: border-box;
 }
 
-/* !!! 关键修正: 创建指向转盘上方 (12点钟) 的伪元素指针 !!! */
+/* 指针: 从按钮伸出，指向转盘上方 (12点钟) */
 .spin-button::before {
     content: '';
     position: absolute;
-    /* 定位到按钮顶部中心 */
-    top: -25px; /* 指针的高度是 25px */
+    top: -25px;
     left: 50%;
     transform: translateX(-50%);
 
     width: 0;
     height: 0;
-    /* 正三角形：边框底部设置为红色，其他透明 */
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-bottom: 25px solid #C70039; /* 指针颜色 */
-    z-index: 11; /* 确保在按钮上方 */
+    border-bottom: 25px solid #C70039;
+    z-index: 11;
 }
 
-/* 移除底部伪元素（如果存在，防止冲突） */
 .spin-button::after {
     display: none;
 }
@@ -113,7 +115,7 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 8px;
 }
-/* ... (省略底部编辑区样式，保持不变) ... */
+/* ... (省略底部编辑区样式) ... */
 .editor-section h2 {
     color: #555;
     margin-bottom: 15px;
