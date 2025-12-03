@@ -1,4 +1,4 @@
-/* public/style.css - 确保按钮居中和尺寸优化 */
+/* public/style.css - 最终修正：顶部独立指针指向下方 */
 
 body {
     font-family: Arial, sans-serif;
@@ -32,17 +32,16 @@ h1 {
 /* 核心：roulette-wrapper 必须是 relative 定位，作为 spin-button 的定位基准 */
 .roulette-wrapper {
     position: relative;
-    /* 保持与 Canvas 尺寸一致 */
     width: 330px;
     height: 330px;
     margin: 30px auto;
     border-radius: 50%;
     transition: transform 4s cubic-bezier(0.2, 0.9, 0.4, 1);
     box-sizing: border-box;
-    border: 10px solid #FFC72C;
+    border: 10px solid #FFC72C; /* 黄色圆圈边框 */
 }
 
-/* 修正 Canvas: 移除边框，使用 100% 尺寸填充 wrapper */
+/* Canvas 占据 wrapper 内部空间 */
 #rouletteCanvas {
     width: 100%;
     height: 100%;
@@ -53,153 +52,35 @@ h1 {
     z-index: 1;
 }
 
+/* !!! 关键修正 1: 独立指针定位 (在 container 内部，转盘上方) !!! */
 .pointer {
-    display: none;
-}
-
-/* 旋转按钮：位于转盘中心 */
-/* 原始按钮尺寸和定位 */
-.spin-button {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100px; /* 原始尺寸较大，可能遮挡文字 */
-    height: 100px;
-    border-radius: 50%;
-    border: none;
-    background-color: #3498DB;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    z-index: 10;
-    text-align: center;
-    line-height: 16px;
-    padding: 34px 0;
-    box-sizing: border-box;
-}
-
-/* 指针: 从按钮伸出，指向转盘上方 (12点钟) */
-.spin-button::before {
-    content: '';
-    position: absolute;
-    top: -25px;
+    /* 假设 container padding-top 为 30px, margin-top 为 30px。
+       转盘总高度 330px + 2*10px 边框 = 350px。
+       指针位于转盘上方的边框（顶部）中心。
+       如果转盘顶部距离 container 顶部 60px 左右，我们将指针定位于此。*/
+    top: 150px; /* 调整此值直到指针恰好在转盘边框顶部 */
     left: 50%;
     transform: translateX(-50%);
 
     width: 0;
     height: 0;
+    /* 指向下方（6点钟）的三角形 */
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-bottom: 25px solid #C70039;
-    z-index: 11;
+    border-top: 25px solid #C70039; /* 使用 border-top 实现朝下的指针 */
+    z-index: 15;
 }
 
-.spin-button::after {
-    display: none;
-}
-
-.result {
-    margin-top: 20px;
-    font-size: 1.5em;
-    color: #2ECC71;
-    font-weight: bold;
-    min-height: 30px;
-}
-
-.editor-section {
-    margin-top: 30px;
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
-/* ... (省略底部编辑区样式) ... */
-.editor-section h2 {
-    color: #555;
-    margin-bottom: 15px;
-}
-
-#itemsContainer .item-field {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    align-items: center;
-}
-
-.item-field input[type="text"] {/* public/style.css - 确保按钮居中和尺寸优化 */
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-.container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    width: 90%;
-}
-
-h1 {
-    color: #333;
-    margin-bottom: 20px;
-}
-
-/* 核心：roulette-wrapper 必须是 relative 定位，作为 spin-button 的定位基准 */
-.roulette-wrapper {
-    position: relative;
-    /* 保持与 Canvas 尺寸一致 */
-    width: 330px;
-    height: 330px;
-    margin: 30px auto;
-    border-radius: 50%;
-    transition: transform 4s cubic-bezier(0.2, 0.9, 0.4, 1);
-    box-sizing: border-box;
-    border: 10px solid #FFC72C;
-}
-
-/* 修正 Canvas: 移除边框，使用 100% 尺寸填充 wrapper */
-#rouletteCanvas {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 50%;
-    display: block;
-    box-sizing: border-box;
-    z-index: 1;
-}
-
-.pointer {
-    display: none;
-}
-
-/* 旋转按钮：位于转盘中心 */
 /* 旋转按钮：位于转盘中心 */
 .spin-button {
-    /* 核心居中三件套：确保按钮在父容器 (.roulette-wrapper) 中绝对居中 */
+    /* 确保按钮在父容器 (.roulette-wrapper) 中绝对居中 */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 
-    /* 确保伪元素指针能够基于按钮定位 */
-    position: relative;
-
-    /* 优化尺寸和文字居中 */
+    /* 保持按钮尺寸和文字居中，防止遮挡 */
     width: 60px;
     height: 60px;
     display: flex;
@@ -213,35 +94,13 @@ h1 {
     font-size: 12px;
     cursor: pointer;
     z-index: 10;
-    text-align: center;
     line-height: 1.1;
     padding: 3px;
     box-sizing: border-box;
-    white-space: normal;
 }
 
-/* 指针: 从按钮伸出，指向转盘下方 (6点钟) */
-.spin-button::before {
-    content: '';
-    position: absolute;
-    /* 关键修正: 定位到按钮下方 */
-    top: 100%; /* 按钮底部 */
-    margin-top: 5px; /* 稍微留出一点距离 */
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 0;
-    height: 0;
-    /* 关键修正: 绘制正三角形，朝下 */
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-top: 25px solid #C70039; /* 使用 border-top 实现朝下的指针 */
-    border-bottom: none; /* 移除原来的 border-bottom */
-    z-index: 11;
-}
-
-.spin-button::after {
+/* 关键修正 2: 移除伪元素指针，因为它现在是独立元素 */
+.spin-button::before, .spin-button::after {
     display: none;
 }
 
@@ -253,6 +112,7 @@ h1 {
     min-height: 30px;
 }
 
+/* ... (省略底部编辑区样式，保持不变) ... */
 .editor-section {
     margin-top: 30px;
     width: 100%;
@@ -261,7 +121,6 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 8px;
 }
-/* ... (省略底部编辑区样式) ... */
 .editor-section h2 {
     color: #555;
     margin-bottom: 15px;
@@ -275,46 +134,6 @@ h1 {
 }
 
 .item-field input[type="text"] {
-    flex-grow: 2;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.item-field input[type="number"] {
-    width: 60px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.remove-item-button {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#addItemButton, .editor-section button[type="submit"] {
-    margin-top: 15px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-#addItemButton {
-    background-color: #f39c12;
-    color: white;
-}
-
-.editor-section button[type="submit"] {
-    background-color: #2ECC71;
-    color: white;
-}
     flex-grow: 2;
     padding: 8px;
     border: 1px solid #ccc;
