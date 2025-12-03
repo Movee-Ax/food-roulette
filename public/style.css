@@ -49,14 +49,13 @@ h1 {
     z-index: 1;
 }
 
-/* !!! 关键修正 1: 移除旧的 .pointer 样式，防止干扰 !!! */
 .pointer {
     display: none;
 }
 
 /* 旋转按钮：位于转盘中央 */
 .spin-button {
-    position: relative; /* 关键: 用于定位::after伪元素 */
+    position: relative; /* 关键: 用于定位::before伪元素 */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -75,24 +74,28 @@ h1 {
     box-sizing: border-box;
 }
 
-/* !!! 关键修正 2: 创建新的伪元素指针，指向下方 !!! */
-.spin-button::after {
+/* !!! 关键修正: 创建指向转盘上方 (12点钟) 的伪元素指针 !!! */
+.spin-button::before {
     content: '';
     position: absolute;
-    /* 定位到按钮底部中心 */
-    bottom: -25px; /* 指针的高度是 25px */
+    /* 定位到按钮顶部中心 */
+    top: -25px; /* 指针的高度是 25px */
     left: 50%;
     transform: translateX(-50%);
 
     width: 0;
     height: 0;
-    /* 倒三角形：边框底部透明，顶部设置为红色 */
+    /* 正三角形：边框底部设置为红色，其他透明 */
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-top: 25px solid #C70039; /* 指针颜色 */
+    border-bottom: 25px solid #C70039; /* 指针颜色 */
     z-index: 11; /* 确保在按钮上方 */
 }
 
+/* 移除底部伪元素（如果存在，防止冲突） */
+.spin-button::after {
+    display: none;
+}
 
 .result {
     margin-top: 20px;

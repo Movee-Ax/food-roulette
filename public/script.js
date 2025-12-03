@@ -98,9 +98,9 @@ async function spinRoulette() {
 
         // 2. 计算最终旋转角度
         const spinRounds = 5;
-        // !!! 关键修正: 偏移角度改为 -90° !!!
-        // 指针在 6点钟方向，Canvas 0° 在 3点钟方向，相差 -90°
-        const OFFSET_DEGREE = -90;
+        // !!! 关键修正: 偏移角度改为 +90° !!!
+        // 指针在 12点钟方向，Canvas 0° 在 3点钟方向，相差 +90°
+        const OFFSET_DEGREE = 90;
 
         // 最终公式：(圈数 * 360) + (360 - 目标中心角度) + 偏移量
         const totalRotation = (spinRounds * 360) + (360 - targetCenterAngle) + OFFSET_DEGREE;
