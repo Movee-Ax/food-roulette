@@ -35,33 +35,33 @@ h1 {
     height: 350px;
     margin: 30px auto;
     border-radius: 50%;
-    /* 动画属性（用于 script.js 中的旋转） */
     transition: transform 4s cubic-bezier(0.2, 0.9, 0.4, 1);
-    box-sizing: content-box; /* 确保 padding/border 不影响尺寸 */
+    box-sizing: content-box;
 }
 
 /* Canvas 画布：用于扇区绘制 */
 #rouletteCanvas {
     width: 100%;
     height: 100%;
-    border: 10px solid #FFC72C; /* 外部的金色圆环 */
+    border: 10px solid #FFC72C;
     border-radius: 50%;
     display: block;
-    box-sizing: border-box; /* 确保边框计算在尺寸内 */
+    box-sizing: border-box;
+    z-index: 1; /* 确保它在底层 */
 }
 
 /* 指针：位于转盘上方中心 */
 .pointer {
     position: absolute;
-    top: -15px; /* 放在转盘上方 */
+    top: -15px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-bottom: 25px solid #C70039; /* 红色的三角形 */
-    z-index: 10;
+    border-bottom: 25px solid #C70039;
+    z-index: 15; /* 确保指针在最顶层 */
 }
 
 /* 旋转按钮：位于转盘中央 */
@@ -78,9 +78,11 @@ h1 {
     color: white;
     font-size: 16px;
     cursor: pointer;
-    z-index: 5;
+    z-index: 10; /* 确保按钮在 Canvas 之上 (高于 z-index: 1) */
     text-align: center;
-    line-height: 100px;
+    line-height: 16px; /* 调整行高以垂直居中文字 */
+    padding: 34px 0; /* 调整 padding 以辅助文字垂直居中 */
+    box-sizing: border-box;
 }
 
 .result {
