@@ -11,7 +11,7 @@ let items = [];
 const colorPalette = ['#FFC72C', '#FF6633', '#C70039', '#8E44AD', '#3498DB', '#1ABC9C', '#2ECC71', '#F1C40F', '#E67E22'];
 
 
-// --- 核心函数：获取数据并绘制 (放在调用之前) ---
+// --- 核心函数：获取数据并绘制 ---
 
 async function fetchItems() {
     try {
@@ -29,7 +29,6 @@ function drawRoulette() {
     const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
     let startAngle = 0;
 
-    // Canvas 尺寸应通过 attributes 获取
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const radius = Math.min(centerX, centerY) - 5;
@@ -86,27 +85,31 @@ async function spinRoulette() {
         let accumulatedWeight = 0;
         let targetCenterAngle = 0;
 
-        // 根据后端结果，计算指针应停止的中心角度
+        // 1. 根据后端结果，计算指针应停止的中心角度
         for (const item of currentItems) {
             const angleDegrees = (item.weight / totalWeight) * 360;
 
             if (item.food === selectedFood) {
+                // 找到了选中的扇区，计算其中心角度
                 targetCenterAngle = accumulatedWeight + (angleDegrees / 2);
                 break;
             }
             accumulatedWeight += angleDegrees;
         }
 
-        // 计算最终旋转角度
+        // 2. 计算最终旋转角度
         const spinRounds = 5;
-        const totalRotation = (spinRounds * 360) + (360 - targetCenterAngle);
+        const OFFSET_DEGREE = 90; // Canvas 0° 是 3点钟方向，指针是 12点钟方向，相差 90°
 
-        // 执行旋转动画
+        // 最终公式：(圈数 * 360) + (360 - 目标中心角度) + 90° 偏移
+        const totalRotation = (spinRounds * 360) + (360 - targetCenterAngle) + OFFSET_DEGREE;
+
+        // 3. 执行旋转动画
         const rouletteWrapper = document.querySelector('.roulette-wrapper');
         rouletteWrapper.style.transition = 'transform 4s cubic-bezier(0.2, 0.9, 0.4, 1)';
         rouletteWrapper.style.transform = `rotate(${totalRotation}deg)`;
 
-        // 动画结束处理
+        // 4. 动画结束处理
         rouletteWrapper.addEventListener('transitionend', function handler() {
             spinButton.disabled = false;
             resultDiv.textContent = `🎉 恭喜！今天吃: ${selectedFood} 🎉`;
@@ -193,7 +196,7 @@ async function handleUpdate(event) {
 }
 
 
-// --- 初始化 (放在所有函数定义之后) ---
+// --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
     fetchItems();
     editorForm.addEventListener('submit', handleUpdate);

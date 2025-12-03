@@ -8,12 +8,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* 确保整个页面垂直居中 */
     min-height: 100vh;
 }
 
 .container {
-    /* 关键：必须设置为 relative，以便外部指针可以相对于它定位 */
+    /* 关键：必须设置为 relative，以便外部指针可以使用 absolute 定位 */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -34,11 +33,10 @@ h1 {
 /* 整个转盘容器：用于定位和应用旋转动画 */
 .roulette-wrapper {
     position: relative;
-    width: 350px; /* 固定的宽度和高度 */
+    width: 350px;
     height: 350px;
     margin: 30px auto;
     border-radius: 50%;
-    /* 动画属性 */
     transition: transform 4s cubic-bezier(0.2, 0.9, 0.4, 1);
     box-sizing: content-box;
 }
@@ -51,15 +49,14 @@ h1 {
     border-radius: 50%;
     display: block;
     box-sizing: border-box;
-    z-index: 1; /* 确保它在底层 */
+    z-index: 1;
 }
 
 /* !!! 关键修正: 指针定位 (位于 .roulette-wrapper 外部) !!! */
 .pointer {
     position: absolute;
-    /* 定位到容器顶部：根据 .container 的 padding 和 h1/margin 调整 */
-    /* 这是一个估算值，可能需要根据实际渲染效果微调 */
-    top: 5px;
+    /* 修正 top 值，使其向下移动，对齐转盘顶部 */
+    top: 45px; /* 根据实际布局修正，将指针尖端对准转盘顶部 */
 
     /* 定位到容器中心 */
     left: 50%;
@@ -70,7 +67,7 @@ h1 {
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     border-bottom: 25px solid #C70039;
-    z-index: 15; /* 确保指针在最顶层 */
+    z-index: 15;
 }
 
 /* 旋转按钮：位于转盘中央 */
@@ -78,7 +75,7 @@ h1 {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* 确保精确居中 */
+    transform: translate(-50%, -50%);
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -87,7 +84,7 @@ h1 {
     color: white;
     font-size: 16px;
     cursor: pointer;
-    z-index: 10; /* 确保按钮在 Canvas 之上，且可点击 */
+    z-index: 10;
     text-align: center;
     line-height: 16px;
     padding: 34px 0;
