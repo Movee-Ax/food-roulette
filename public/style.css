@@ -78,10 +78,10 @@ h1 {
     color: white;
     font-size: 16px;
     cursor: pointer;
-    z-index: 10; /* 确保按钮在 Canvas 之上 (高于 z-index: 1) */
+    z-index: 10; /* 确保按钮在 Canvas 之上 */
     text-align: center;
-    line-height: 16px; /* 调整行高以垂直居中文字 */
-    padding: 34px 0; /* 调整 padding 以辅助文字垂直居中 */
+    line-height: 16px;
+    padding: 34px 0;
     box-sizing: border-box;
 }
 
