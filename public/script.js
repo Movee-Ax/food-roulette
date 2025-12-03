@@ -1,5 +1,3 @@
-// public/script.js
-
 const canvas = document.getElementById('rouletteCanvas');
 const ctx = canvas.getContext('2d');
 const spinButton = document.getElementById('spinButton');
@@ -31,6 +29,7 @@ function drawRoulette() {
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
+    // 原始半径计算
     const radius = Math.min(centerX, centerY) - 5;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -60,7 +59,8 @@ function drawRoulette() {
         ctx.textAlign = 'right';
         ctx.fillStyle = 'black';
         ctx.font = '14px Arial';
-        ctx.fillText(item.food, radius - 20, 0);
+        // **修正：文字绘制位置离圆心更远 (radius - 10)，避免被中心按钮遮挡**
+        ctx.fillText(item.food, radius - 10, 0);
         ctx.restore();
 
         startAngle = endAngle;
@@ -98,9 +98,8 @@ async function spinRoulette() {
 
         // 2. 计算最终旋转角度
         const spinRounds = 5;
-        // !!! 关键修正: 偏移角度改为 +90° !!!
-        // 指针在 12点钟方向，Canvas 0° 在 3点钟方向，相差 +90°
-        const OFFSET_DEGREE = 90;
+        // **关键修正: 偏移角度改为 -90°，配合底部指针 (6点钟方向)**
+        const OFFSET_DEGREE = -90;
 
         // 最终公式：(圈数 * 360) + (360 - 目标中心角度) + 偏移量
         const totalRotation = (spinRounds * 360) + (360 - targetCenterAngle) + OFFSET_DEGREE;
