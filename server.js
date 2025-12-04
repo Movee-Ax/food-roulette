@@ -75,8 +75,36 @@ app.get('/api/roulette', async (req, res) => {
     }
 });
 
-// POST /api/roulette/update: 动态修改转盘内容及比例 (省略实现，保持和上一个版本一致)
 
+// POST /api/roulette/update: 动态修改转盘内容及比例
+app.post('/api/roulette/update', async (req, res) => {
+    const items = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: 'Invalid items list.' });
+    }
+
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN'); // 开启事务
+
+        // 1. 清空旧数据
+        await client.query("DELETE FROM items");
+
+        // 2. 插入新数据
+        const insertPromises = items.map(item => {
+            return client.query("INSERT INTO items (food, weight) VALUES ($1, $2)", [item.food, item.weight]);
+        });
+        await Promise.all(insertPromises);
+
+        await client.query('COMMIT'); // 提交事务
+        res.json({ message: 'Roulette items updated successfully in PostgreSQL.' });
+    } catch (e) {
+        await client.query('ROLLBACK'); // 出现错误时回滚
+        res.status(500).json({ error: 'Update failed: ' + e.message });
+    } finally {
+        client.release(); // 释放连接
+    }
+});
 // POST /api/roulette/spin: 随机选取一个食物
 app.post('/api/roulette/spin', async (req, res) => {
     try {
