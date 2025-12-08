@@ -10,6 +10,30 @@
 /*    align-items: center;*/
 /*    min-height: 100vh;*/
 /*}*/
+
+/* !!! 关键修正：强制固定底部和居中 !!! */
+#icp-footer {
+    /* 固定定位，脱离文档流，不受 body 的 Flexbox 影响 */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    width: 100%; /* 占据整个视窗宽度 */
+
+    text-align: center; /* 文本居中 */
+
+    /* 样式美化 */
+    background-color: rgba(255, 255, 255, 0.9); /* 轻微透明白色背景，确保可见 */
+    padding: 10px 0;
+    font-size: 12px;
+    color: #888;
+    z-index: 9999; /* 确保它在所有元素之上 */
+}
+
+#icp-footer a {
+    color: #888;
+    text-decoration: none;
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
